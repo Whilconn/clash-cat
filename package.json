@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./src/index.mjs",
+    "spider": "node ./src/spider/main.mjs",
     "postinstall": "node ./libs/install.mjs"
   },
   "keywords": [],

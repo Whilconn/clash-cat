@@ -1,0 +1,31 @@
+name: crawl subscriptions
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  run-node-file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts # 跳过 postinstall
+
+      - name: Run spider script
+        run: npm run spider > output.txt
+
+      - name: Upload output as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: spider-output
+          path: output.txt
