@@ -1,0 +1,15 @@
+{
+  "group": "clash-cat",
+  "speedtestMode": "all",
+  "pingMethod": "googleping",
+  "sortMethod": "rspeed",
+  "concurrency": 1000,
+  "testMode": 2,
+  "subscription": "",
+  "timeout": 6,
+  "language": "en",
+  "fontSize": 24,
+  "unique": true,
+  "theme": "rainbow",
+  "outputMode": 3
+}

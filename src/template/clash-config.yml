@@ -1,0 +1,187 @@
+# port: 7890
+# socks-port: 7891
+# external-controller: 127.0.0.1:9090
+allow-lan: false
+mode: Rule
+log-level: info
+secret: ''
+dns:
+  enable: true
+  ipv6: false
+  nameserver:
+    - 223.5.5.5
+    - 180.76.76.76
+    - 119.29.29.29
+    - 117.50.11.11
+    - 117.50.10.10
+    - 114.114.114.114
+    - https://dns.alidns.com/dns-query
+    - https://doh.360.cn/dns-query
+  fallback:
+    - 8.8.8.8
+    - tls://dns.rubyfish.cn:853
+    - tls://1.0.0.1:853
+    - tls://dns.google:853
+    - https://dns.rubyfish.cn/dns-query
+    - https://cloudflare-dns.com/dns-query
+    - https://dns.google/dns-query
+  fallback-filter:
+    geoip: true
+    ipcidr:
+      - 240.0.0.0/4
+      - 0.0.0.0/32
+      - 127.0.0.1/32
+    domain:
+      - +.google.com
+      - +.facebook.com
+      - +.youtube.com
+      - +.xn--ngstr-lra8j.com
+      - +.google.cn
+      - +.googleapis.cn
+      - +.gvt1.com
+proxy-groups:
+  - name: Auto
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    use:
+      - proxies-alive
+  - name: Balance1
+    type: load-balance
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    strategy: consistent-hashing
+    use:
+      - proxies-alive
+  - name: Balance2
+    type: load-balance
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    strategy: round-robin
+    use:
+      - proxies-alive
+  - name: Proxy
+    type: select
+    proxies:
+      - Auto
+      - Balance1
+      - Balance2
+    use:
+      - proxies-alive
+proxy-providers:
+  proxies-alive:
+    type: file
+    path: ./profiles/proxies-alive.yml
+    health-check:
+      enable: true
+      interval: 300
+      url: http://www.gstatic.com/generate_204
+# see https://bgithub.xyz/Loyalsoldier/clash-rules
+rule-providers:
+  reject:
+    type: http
+    behavior: domain
+    url: 'https://raw.bgithub.xyz/Loyalsoldier/clash-rules/release/reject.txt'
+    path: ./ruleset/reject.yaml
+    interval: 86400
+
+  icloud:
+    type: http
+    behavior: domain
+    url: 'https://raw.bgithub.xyz/Loyalsoldier/clash-rules/release/icloud.txt'
+    path: ./ruleset/icloud.yaml
+    interval: 86400
+
+  apple:
+    type: http
+    behavior: domain
+    url: 'https://raw.bgithub.xyz/Loyalsoldier/clash-rules/release/apple.txt'
+    path: ./ruleset/apple.yaml
+    interval: 86400
+
+  google:
+    type: http
+    behavior: domain
+    url: 'https://raw.bgithub.xyz/Loyalsoldier/clash-rules/release/google.txt'
+    path: ./ruleset/google.yaml
+    interval: 86400
+
+  proxy:
+    type: http
+    behavior: domain
+    url: 'https://raw.bgithub.xyz/Loyalsoldier/clash-rules/release/proxy.txt'
+    path: ./ruleset/proxy.yaml
+    interval: 86400
+
+  direct:
+    type: http
+    behavior: domain
+    url: 'https://raw.bgithub.xyz/Loyalsoldier/clash-rules/release/direct.txt'
+    path: ./ruleset/direct.yaml
+    interval: 86400
+
+  private:
+    type: http
+    behavior: domain
+    url: 'https://raw.bgithub.xyz/Loyalsoldier/clash-rules/release/private.txt'
+    path: ./ruleset/private.yaml
+    interval: 86400
+
+  gfw:
+    type: http
+    behavior: domain
+    url: 'https://raw.bgithub.xyz/Loyalsoldier/clash-rules/release/gfw.txt'
+    path: ./ruleset/gfw.yaml
+    interval: 86400
+
+  tld-not-cn:
+    type: http
+    behavior: domain
+    url: 'https://raw.bgithub.xyz/Loyalsoldier/clash-rules/release/tld-not-cn.txt'
+    path: ./ruleset/tld-not-cn.yaml
+    interval: 86400
+
+  telegramcidr:
+    type: http
+    behavior: ipcidr
+    url: 'https://raw.bgithub.xyz/Loyalsoldier/clash-rules/release/telegramcidr.txt'
+    path: ./ruleset/telegramcidr.yaml
+    interval: 86400
+
+  cncidr:
+    type: http
+    behavior: ipcidr
+    url: 'https://raw.bgithub.xyz/Loyalsoldier/clash-rules/release/cncidr.txt'
+    path: ./ruleset/cncidr.yaml
+    interval: 86400
+
+  lancidr:
+    type: http
+    behavior: ipcidr
+    url: 'https://raw.bgithub.xyz/Loyalsoldier/clash-rules/release/lancidr.txt'
+    path: ./ruleset/lancidr.yaml
+    interval: 86400
+
+  applications:
+    type: http
+    behavior: classical
+    url: 'https://raw.bgithub.xyz/Loyalsoldier/clash-rules/release/applications.txt'
+    path: ./ruleset/applications.yaml
+    interval: 86400
+rules:
+  - RULE-SET,applications,DIRECT
+  - RULE-SET,private,DIRECT
+  - RULE-SET,reject,REJECT
+  - RULE-SET,icloud,DIRECT
+  - RULE-SET,apple,DIRECT
+  - RULE-SET,google,DIRECT
+  - RULE-SET,proxy,Proxy
+  - RULE-SET,direct,DIRECT
+  - RULE-SET,lancidr,DIRECT
+  - RULE-SET,cncidr,DIRECT
+  - RULE-SET,tld-not-cn,Proxy
+  - RULE-SET,gfw,Proxy
+  - RULE-SET,telegramcidr,Proxy
+  - GEOIP,LAN,DIRECT
+  - GEOIP,CN,DIRECT
+  - MATCH,DIRECT
