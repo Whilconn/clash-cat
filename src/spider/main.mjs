@@ -1,9 +1,6 @@
 import axios from 'axios';
 import { resolveSubscription } from './subscription.mjs';
-
-const subLinksPages = [
-  'https://raw.githubusercontent.com/mermeroo/V2RAY-and-CLASH-Subscription-Links/main/SUB%20LINKS',
-];
+import subSource from '../../local/subscription-source.json' with { type: 'json' };
 
 async function extractSubLinks(url) {
   const res = await axios.get(url).then((res) => res.data);
@@ -13,7 +10,7 @@ async function extractSubLinks(url) {
 async function start() {
   const subLinks = [];
 
-  for (const url of subLinksPages) {
+  for (const url of subSource.aggregationLinks) {
     const links = await extractSubLinks(url);
     subLinks.push(...links);
   }

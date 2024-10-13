@@ -3,7 +3,7 @@ name: crawl subscriptions
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   run-node-file:
@@ -12,6 +12,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Dowanload file
+        run: curl -o ./local/subscription-source.json ${{ vars.SUB }}
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
