@@ -1,7 +1,5 @@
 name: crawl subscriptions
 
-on: workflow_dispatch
-
 on:
   push:
     branches:
