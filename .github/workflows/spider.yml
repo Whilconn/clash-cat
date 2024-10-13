@@ -1,11 +1,11 @@
 name: crawl subscriptions
 
+on: workflow_dispatch
+
 on:
   push:
     branches:
       - dev
-
-  workflow_dispatch
 
 jobs:
   run-node-file:
