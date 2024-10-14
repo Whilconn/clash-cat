@@ -5,12 +5,13 @@ import { ENCODING, PATHS } from '../utils/constant.mjs';
 import { httpRequest } from '../utils/http.mjs';
 import { transformUrlByMirror } from '../utils/mirrors.mjs';
 import { logger } from '../utils/logger.mjs';
+import subSource from '../../local/subscription-source.json' with { type: 'json' };
 
 const localSubFile = path.resolve(PATHS.tmpDistAbs, 'local-sub.txt');
 
-const proxyUrls = [];
+const proxyUrls = subSource.mixedLinks;
 
-export const subscriptions = [];
+export const subscriptions = subSource.links;
 
 async function proxyToSub(urlList) {
   const proxyTexts = [];
