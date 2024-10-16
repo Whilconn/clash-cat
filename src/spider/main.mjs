@@ -1,16 +1,11 @@
-import axios from 'axios';
+import { resolveAggregation } from './aggregation.mjs';
 import { resolveSubscription } from './subscription.mjs';
 import subSource from '../../local/subscription-source.json' with { type: 'json' };
 
-async function extractSubLinks(url) {
-  const res = await axios.get(url).then((res) => res.data);
-  return res.match(/https?:\/\/[\S]+/g);
-}
-
 async function start() {
-  const subLinks = [];
+  const subLinks = await resolveAggregation(subSource.aggregationSubLinks);
 
-  for (const url of subSource.aggregationLinks) {
+  for (const url of subSource.aggregationSubLinks) {
     const links = await extractSubLinks(url);
     subLinks.push(...links);
   }

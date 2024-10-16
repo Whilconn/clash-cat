@@ -9,9 +9,7 @@ import subSource from '../../local/subscription-source.json' with { type: 'json'
 
 const localSubFile = path.resolve(PATHS.tmpDistAbs, 'local-sub.txt');
 
-const proxyUrls = subSource.mixedLinks;
-
-export const subscriptions = subSource.links;
+export const subscriptions = subSource.subLinks;
 
 async function proxyToSub(urlList) {
   const proxyTexts = [];
@@ -34,8 +32,8 @@ async function proxyToSub(urlList) {
 export async function generateSubscriptions() {
   logger.info('处理订阅链接...');
 
-  const urls = await Promise.all(proxyUrls.map((s) => transformUrlByMirror(s)));
-  const mirroredSubs = await Promise.all(subscriptions.map((s) => transformUrlByMirror(s)));
+  const urls = await Promise.all(subSource.mixedSubLinks.map((s) => transformUrlByMirror(s)));
+  const mirroredSubs = await Promise.all(subSource.subLinks.map((s) => transformUrlByMirror(s)));
   await proxyToSub(urls);
 
   return [...mirroredSubs, localSubFile];
