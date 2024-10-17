@@ -38,7 +38,7 @@ async function dumpYml(ymlProxies) {
 }
 
 function compress() {
-  const pwd = process.env.MY_PWD;
+  const pwd = process.env.ZIP_PWD;
   if (!pwd) throw new Error('pwd缺失');
 
   const sourceDir = path.resolve(PATHS.subDistAbs, '*');

@@ -25,9 +25,9 @@ jobs:
         run: npm install --ignore-scripts # 跳过 postinstall
 
       - name: Run spider script
-        run: |
-          export MY_PWD=${{ secrets.MY_PWD }}
-          npm run spider
+        env:
+          ZIP_PWD: ${{ secrets.ZIP_PWD }}
+        run: npm run spider
 
       - name: Get Release ID
         id: get_release
