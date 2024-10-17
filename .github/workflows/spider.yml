@@ -60,7 +60,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }} # 要创建的 Release 标签
+          tag_name: 'v1' # 要创建的 Release 标签
           release_name: 'v1' # Release 名称
           draft: false
           prerelease: false
