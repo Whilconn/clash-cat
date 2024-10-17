@@ -27,7 +27,7 @@ export const ENCODING = {
 };
 
 export const SUB_PREFIX = {
-  PLAIN: 'PLAIN',
-  BASE64: 'BASE64',
-  YML: 'YML',
+  PLAIN: 'plain',
+  BASE64: 'base64',
+  YML: 'yml',
 };

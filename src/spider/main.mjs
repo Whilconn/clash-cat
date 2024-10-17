@@ -1,19 +1,20 @@
-import { resolveAggregation } from './aggregation.mjs';
-import { resolveSubscription } from './subscription.mjs';
+import fsp from 'node:fs/promises';
+import { resolveAggregations } from './aggregation.mjs';
+import { resolveSubscriptions } from './subscription.mjs';
+import { dumpResolvedSubs } from './dump.mjs';
+import { PATHS } from '../utils/constant.mjs';
+
 import subSource from '../../local/subscription-source.json' with { type: 'json' };
 
 async function start() {
-  const subLinks = await resolveAggregation(subSource.aggregationSubLinks);
+  await fsp.mkdir(PATHS.subDistAbs, { recursive: true });
 
-  for (const url of subSource.aggregationSubLinks) {
-    const links = await extractSubLinks(url);
-    subLinks.push(...links);
-  }
+  const subLinks = await resolveAggregations(subSource.aggregationSubLinks);
+  subLinks.push(...subSource.mixedSubLinks, ...subSource.subLinks);
 
-  for (const l of subLinks) {
-    const r = await resolveSubscription(l);
-    console.log(r);
-  }
+  const resolvedSubs = await resolveSubscriptions(subLinks);
+
+  return dumpResolvedSubs(resolvedSubs);
 }
 
 start();

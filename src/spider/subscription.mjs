@@ -1,6 +1,7 @@
 import yaml from 'js-yaml';
 import axios from 'axios';
 import { Base64 } from 'js-base64';
+import { runBatch } from '../utils/task.mjs';
 
 axios.defaults.timeout = 1e4;
 
@@ -9,24 +10,23 @@ function extractYmlProxies(text) {
   return ymlBean?.proxies || [];
 }
 
-function isPlainProxy(line) {
-  const reg = /^(ss|ssr|vmess|vless|trojan):\/\/.+$/;
-  return reg.test(line);
-}
-
 function extractPlainProxyLines(text) {
-  const lines = text.replace(/[<>]/g, '\n').split('\n').filter(Boolean);
+  // 避免 html干扰
+  text = text.replace(/[<>]/g, '\n');
+  const lines = text.split('\n').map((s) => s.trim());
 
-  return lines.filter(isPlainProxy);
+  const reg = /^(ss|ssr|vmess|vless|trojan):\/\/.+$/;
+  return lines.filter((l) => l && reg.test(l));
 }
 
 function extractBase64Lines(text) {
   const lines = text.split('\n').filter(Boolean);
-  const plainText = Base64.decode(lines.at(0));
-  return isPlainProxy(plainText) ? lines : null;
+  const plainText = Base64.decode(lines.at(0)).trim();
+  const reg = /^(ss|ssr|vmess|vless|trojan):\/\/.+/;
+  return reg.test(plainText) ? lines : null;
 }
 
-export async function resolveSubscription(url) {
+async function resolveSubscription(url) {
   let res;
 
   try {
@@ -52,4 +52,11 @@ export async function resolveSubscription(url) {
   const plainLines = extractPlainProxyLines(res);
   const isPlain = !!plainLines?.length;
   if (isPlain) return { url, isPlain, plainLines };
+}
+
+export async function resolveSubscriptions(subLinks) {
+  const tasks = subLinks.map((l) => resolveSubscription(l));
+  const results = await runBatch(tasks, 10);
+
+  return results.flat(Infinity).filter((r) => r && !(r instanceof Error));
 }

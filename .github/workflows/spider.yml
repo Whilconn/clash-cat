@@ -25,10 +25,52 @@ jobs:
         run: npm install --ignore-scripts # 跳过 postinstall
 
       - name: Run spider script
-        run: npm run spider > output.txt
+        run: |
+          export MY_PWD=${{ secrets.MY_PWD }}
+          npm run spider
 
-      - name: Upload output as artifact
-        uses: actions/upload-artifact@v3
+      - name: Get Release ID
+        id: get_release
+        run: |
+          RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/v1")
+
+          # 提取 Release ID
+          RELEASE_ID=$(echo $RESPONSE | jq -r '.id')
+
+          if [ "$RELEASE_ID" == "null" ]; then
+            echo "Release not found."
+          fi
+
+          echo "RELEASE_ID=$RELEASE_ID" >> $GITHUB_ENV
+
+      - name: Delete Release
+        run: |
+          if [ "${{ env.RELEASE_ID }}" != "null" ]; then
+            curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/repos/${{ github.repository }}/releases/${{ env.RELEASE_ID }}"
+            echo "Deleted release with ID: ${{ env.RELEASE_ID }}"
+          else
+            echo "No existing release to delete."
+          fi
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: spider-output
-          path: output.txt
+          tag_name: ${{ github.ref }} # 要创建的 Release 标签
+          release_name: 'v1' # Release 名称
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # 获取上传 URL
+          asset_path: ./dist/sub.zip # 替换为要上传的文件路径
+          asset_name: sub.zip # 上传后的文件名称
+          asset_content_type: application/zip # 文件类型
