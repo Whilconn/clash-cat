@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ./src/index.mjs",
-    "spider": "node ./src/spider/main.mjs",
+    "start": "node ./src/convert-pipeline/index.mjs",
+    "spider": "node ./src/spider/index.mjs",
     "postinstall": "node ./libs/install.mjs"
   },
   "keywords": [],

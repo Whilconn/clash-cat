@@ -6,7 +6,7 @@ import { logger } from '../utils/logger.mjs';
 import { httpRequest } from '../utils/http.mjs';
 import { PATHS, PROTOCOL } from '../utils/constant.mjs';
 import { normalizeProxiesFile } from '../utils/proxies.mjs';
-import { urlToClashProxy } from '../proxy/index.mjs';
+import { urlToClashProxy } from './proxy/index.mjs';
 import { dumpProxiesYml } from '../dump/clash-yml.mjs';
 import { invokeSpeedTest } from '../../libs/invoke.mjs';
 

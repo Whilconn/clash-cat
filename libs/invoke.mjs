@@ -57,6 +57,11 @@ async function dumpSubConvertConfig(subscriptionUrls) {
   return ymlPath;
 }
 
+/**
+ * 文件路径或链接数组
+ * @param {Array<string>} subscriptionUrls
+ * @returns {string}
+ */
 export async function invokeSubconverterByCmd(subscriptionUrls) {
   const ymlPath = await dumpSubConvertConfig(subscriptionUrls);
 

@@ -1,9 +1,9 @@
 import fsp from 'node:fs/promises';
-import { logger } from './utils/logger.mjs';
-import { PATHS } from './utils/constant.mjs';
-import { dumpClashYml } from './dump/clash-yml.mjs';
-import { resolveSubscriptionsByLib } from './subscription/resolver-lib.mjs';
-import { resolveSubscriptionsExp } from './subscription/resolver-exp.mjs';
+import { loadSubFiles } from './input.mjs';
+import { logger } from '../utils/logger.mjs';
+import { PATHS } from '../utils/constant.mjs';
+import { dumpClashYml } from '../dump/clash-yml.mjs';
+import { transformSubFilesByLib } from './transform.mjs';
 
 function wrapTimeLogger(fn, actionName) {
   return async (...args) => {
@@ -28,8 +28,8 @@ async function ensureDistDir() {
 async function start() {
   await ensureDistDir();
 
-  const proxies = await wrapTimeLogger(resolveSubscriptionsByLib, '解析节点')();
-  // const proxies = await wrapTimeLogger(resolveSubscriptionsExp, '解析节点')();
+  const subFiles = await wrapTimeLogger(loadSubFiles, '加载订阅文件')();
+  const proxies = await wrapTimeLogger(transformSubFilesByLib, '解析节点')(subFiles);
   await wrapTimeLogger(dumpClashYml, '写入文件')(proxies);
 
   return proxies;
