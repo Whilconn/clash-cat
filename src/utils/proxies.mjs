@@ -4,7 +4,7 @@ import { ENCODING } from './constant.mjs';
 
 function isProxyValid(proxy) {
   //check server
-  const notValid1 = !/^.+[.].+[.].+$/.test(proxy.server);
+  const notValid1 = !/^\w+[.]\w+[.]\w+$/.test(proxy.server);
   const notValid2 = ['127.0.0.1'].includes(proxy.server);
   if (notValid1 || notValid2) return false;
 
@@ -13,6 +13,8 @@ function isProxyValid(proxy) {
 }
 
 function formatName(name) {
+  if (!name || typeof name !== 'string') return '';
+
   const K = 6;
   // 剔除空格、emoji国旗
   name = name.replace(/\s|\ud83c[\ud000-\udfff](\ud83c[\ud000-\udfff])?/g, '');

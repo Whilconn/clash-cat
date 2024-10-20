@@ -4,10 +4,9 @@ import fsp from 'node:fs/promises';
 import { PATHS } from '../utils/constant.mjs';
 import { exec } from '../utils/exec.mjs';
 
-async function loadLocalFiles() {
-  const tempDir = path.resolve(PATHS.localAbs, new Date().toJSON().slice(0, 10));
-  const filePaths = await fsp.readdir(tempDir);
-  return filePaths.map((f) => path.resolve(tempDir, f));
+async function loadLocalFiles(dir) {
+  const filePaths = await fsp.readdir(dir);
+  return filePaths.map((f) => path.resolve(dir, f));
 }
 
 async function downloadRemoteFiles(url) {
@@ -16,6 +15,8 @@ async function downloadRemoteFiles(url) {
 }
 
 export async function loadSubFiles() {
+  const tempDir = path.resolve(PATHS.localAbs, new Date().toJSON().slice(0, 10));
+
   // await downloadRemoteFiles('https://github.com/Whilconn/clash-cat/releases/download/v1/sub.zip');
-  return loadLocalFiles();
+  return loadLocalFiles(tempDir);
 }

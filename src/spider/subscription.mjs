@@ -58,5 +58,5 @@ export async function resolveSubscriptions(subLinks) {
   const tasks = subLinks.map((l) => resolveSubscription(l));
   const results = await runBatch(tasks, 10);
 
-  return results.flat(Infinity).filter((r) => r && !(r instanceof Error));
+  return results.filter((r) => r && !(r instanceof Error));
 }

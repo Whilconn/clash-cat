@@ -3,6 +3,7 @@ import path from 'node:path';
 import yaml from 'js-yaml';
 import ping from 'ping';
 import { exec } from '../src/utils/exec.mjs';
+import { runBatch } from '../src/utils/task.mjs';
 import { ENCODING, PATHS } from '../src/utils/constant.mjs';
 import { LIB_LITE, LIB_SUBCONVERTER } from './libs.mjs';
 
@@ -29,7 +30,7 @@ export async function invokeSpeedTest(clashYmlPath) {
 }
 
 // lite speed test 出错时的备用方案
-export async function invokeSpeedTest2(clashYmlPath) {
+export async function pingTest(clashYmlPath) {
   const clashYmlText = await fsp.readFile(clashYmlPath, ENCODING.UTF8);
   const proxies = yaml.load(clashYmlText)?.proxies || [];
 
@@ -37,8 +38,14 @@ export async function invokeSpeedTest2(clashYmlPath) {
     return ping.promise.probe(p.server, { timeout: 2, min_reply: 1 });
   });
 
-  const pingResults = await Promise.all(pingTasks);
-  return proxies.filter((_, i) => pingResults[i].alive);
+  const pingResults = await runBatch(pingTasks, 100);
+  const aliveProxies = proxies.filter((_, i) => pingResults[i]?.alive);
+
+  const filePath = clashYmlPath.replace('all', 'ping');
+  const ymlText = yaml.dump({ proxies: aliveProxies });
+  await fsp.writeFile(filePath, ymlText, ENCODING.UTF8);
+
+  return filePath;
 }
 
 async function dumpSubConvertConfig(subscriptionUrls) {

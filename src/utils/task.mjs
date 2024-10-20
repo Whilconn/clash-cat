@@ -12,7 +12,7 @@ export async function runBatch(asyncTasks, batchSize) {
       });
     });
 
-    results.push(batchResults);
+    results.push(...batchResults);
   }
 
   return results;
