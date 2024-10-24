@@ -15,8 +15,6 @@ async function downloadRemoteFiles(url) {
 }
 
 export async function loadSubFiles() {
-  const tempDir = path.resolve(PATHS.localAbs, new Date().toJSON().slice(0, 10));
-
   // await downloadRemoteFiles('https://github.com/Whilconn/clash-cat/releases/download/v1/sub.zip');
-  return loadLocalFiles(tempDir);
+  return loadLocalFiles(PATHS.subDistAbs);
 }

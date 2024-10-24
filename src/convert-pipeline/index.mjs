@@ -22,7 +22,6 @@ async function ensureDistDir() {
   await fsp.rm(PATHS.distAbs, { force: true, recursive: true });
   await fsp.mkdir(PATHS.tmpDistAbs, { recursive: true });
   await fsp.mkdir(PATHS.subDistAbs, { recursive: true });
-  await fsp.mkdir(PATHS.localAbs, { recursive: true });
 }
 
 async function start() {

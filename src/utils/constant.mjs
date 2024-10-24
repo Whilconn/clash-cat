@@ -7,7 +7,6 @@ export const PATHS = {
   srcAbs: path.resolve(root, 'src'),
   libsAbs: path.resolve(root, 'libs'),
   pkgsAbs: path.resolve(root, 'libs/pkgs'),
-  localAbs: path.resolve(root, 'local'),
   distAbs: path.resolve(root, 'dist'),
   tmpDistAbs: path.resolve(root, 'dist/tmp'),
   subDistAbs: path.resolve(root, 'dist/sub'),
