@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { transformUrlByMirror } from './mirrors.mjs';
+import { convertGithubRawToJsdelivr } from './gh-mirrors.mjs';
 
 const httpClient = axios.create({ timeout: 6000 });
 
@@ -8,7 +8,7 @@ export async function httpRequest(url, opts) {
 }
 
 httpClient.interceptors.request.use(async (config) => {
-  config.url = await transformUrlByMirror(config.url);
+  config.url = convertGithubRawToJsdelivr(config.url);
 
   return config;
 });

@@ -5,8 +5,9 @@ import { ENCODING } from './constant.mjs';
 function isProxyValid(proxy) {
   //check server
   const notValid1 = !/^.+[.].+[.].+$/.test(proxy.server);
-  const notValid2 = ['127.0.0.1'].includes(proxy.server);
-  if (notValid1 || notValid2) return false;
+  const notValid2 = /[@?&=:>]/.test(proxy.server);
+  const notValid3 = ['127.0.0.1'].includes(proxy.server);
+  if (notValid1 || notValid2 || notValid3) return false;
 
   //check port and password
   return /^\d+$/.test(proxy.port) && /^[\u0020-\u007e]+$/.test(proxy.password);

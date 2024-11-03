@@ -1,9 +1,7 @@
 import yaml from 'js-yaml';
-import axios from 'axios';
 import { Base64 } from 'js-base64';
 import { runBatch } from '../utils/task.mjs';
-
-axios.defaults.timeout = 1e4;
+import { httpRequest } from '../utils/http.mjs';
 
 function extractYmlProxies(text) {
   const ymlBean = yaml.load(text);
@@ -30,7 +28,7 @@ async function resolveSubscription(url) {
   let res;
 
   try {
-    res = await axios.get(url).then((res) => res.data);
+    res = await httpRequest(url);
   } catch (error) {
     return null;
   }

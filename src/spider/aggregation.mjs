@@ -1,9 +1,9 @@
-import axios from 'axios';
 import { runBatch } from '../utils/task.mjs';
+import { httpRequest } from '../utils/http.mjs';
 
 async function extractSubLinks(aggregationUrl) {
   try {
-    const res = await axios.get(aggregationUrl).then((res) => res.data);
+    const res = await httpRequest(aggregationUrl);
     return res.match(/https?:\/\/[\S]+/g) || [];
   } catch (error) {}
 
