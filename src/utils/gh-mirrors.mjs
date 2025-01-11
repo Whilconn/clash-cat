@@ -20,9 +20,37 @@ export function convertGithubRawToJsdelivr(rawUrl) {
   return `https://${JSDELIVR_HOST}/gh/${username}/${repo}@${branch}/${filePath}`;
 }
 
-/** 示例使用
+/** 使用示例
 const originalUrl = 'https://raw.githubusercontent.com/vxiaov/free_proxies/main/clash/clash.provider.yaml';
 const cdnUrl = convertGithubRawToJsdelivr(originalUrl);
 
 console.log('CDN URL:', cdnUrl);
+https://cdn.jsdelivr.net/gh/vxiaov/free_proxies@main/clash/clash.provider.yaml
  */
+
+export function useGitHubMirror(originalUrl, mirrorIndex = 0) {
+  const ghMirrors = ['bgithub.xyz', 'hgithub.xyz'];
+  const ghRawMirrors = ghMirrors.map((m) => `raw.${m}`);
+
+  const mirrorMap = {
+    'github.com': ghMirrors,
+    'raw.githubusercontent.com': ghRawMirrors,
+  };
+
+  const urlBean = new URL(originalUrl);
+  const mirrorHosts = mirrorMap[urlBean.hostname];
+
+  if (Array.isArray(mirrorHosts) && mirrorHosts?.length) {
+    urlBean.hostname = mirrorHosts[mirrorIndex];
+  }
+
+  return urlBean.toString();
+}
+
+/** 使用示例
+const originalUrl = 'https://raw.githubusercontent.com/vxiaov/free_proxies/main/clash/clash.provider.yaml';
+const cdnUrl = useGitHubMirror(originalUrl);
+
+console.log('MIRROR URL:', cdnUrl);
+MIRROR URL: https://raw.bgithub.xyz/vxiaov/free_proxies/main/clash/clash.provider.yaml 
+*/
