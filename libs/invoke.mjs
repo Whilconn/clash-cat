@@ -2,12 +2,69 @@ import fsp from 'node:fs/promises';
 import path from 'node:path';
 import yaml from 'js-yaml';
 import ping from 'ping';
+import { logger } from '../src/utils/logger.mjs';
 import { exec } from '../src/utils/exec.mjs';
 import { runBatch } from '../src/utils/task.mjs';
 import { ENCODING, PATHS } from '../src/utils/constant.mjs';
-import { LIB_LITE, LIB_SUBCONVERTER } from './libs.mjs';
+import { LIB_LITE, LIB_MIHOMO, LIB_SUBCONVERTER } from './libs.mjs';
 
 const execOpts = { cwd: PATHS.tmpDistAbs };
+
+function validateByMihomo(clashYmlPath) {
+  const appPath = path.resolve(PATHS.pkgsAbs, LIB_MIHOMO.appPath);
+  const cmd = `${appPath} -t -f ${clashYmlPath}`;
+
+  try {
+    exec(cmd, { ...execOpts, stdio: '' });
+  } catch (err) {
+    /**
+     * err.stdout example:
+     * "time=\"2025-01-13T10:02:41.970502890+08:00\" level=info msg=\"Start initial configuration in progress\"\ntime=\"2025-01-13T10:02:41.976557666+08:00\" level=error msg=\"proxy 249: ss series-a2-me.samanehha.co:443 initialize error: unknown method: chacha20-poly1305\"\nconfiguration file /home/whilconn/workspaced9/clash-cat/dist/tmp/proxies-all-20250111104120.yml test failed\n"
+     */
+
+    logger.info(`Mihomo检测到代理节点异常：${err.stdout}`);
+
+    const errReg = /level=error msg="[^"]*\s([\S.]+:\d+)\s[^"]*"/;
+    const errorHosts = err.stdout
+      .split('\n')
+      .map((s) => {
+        const match = s.match(errReg);
+        return match?.length ? match[1] : '';
+      })
+      .filter(Boolean);
+
+    return errorHosts;
+  }
+}
+
+export async function invokeMihomoValidate(ymlPath) {
+  if (!ymlPath) return;
+
+  while (true) {
+    const clashYmlText = await fsp.readFile(ymlPath, ENCODING.UTF8);
+    const ymlBean = yaml.load(clashYmlText);
+
+    if (!ymlBean?.proxies?.length) return;
+
+    const errorHosts = validateByMihomo(ymlPath) || [];
+
+    if (!errorHosts.length) return;
+
+    ymlBean.proxies = ymlBean.proxies.filter((p) => {
+      return !errorHosts.includes(`${p.server}:${p.port}`);
+    });
+
+    const ymlText = yaml.dump(ymlBean);
+    await fsp.writeFile(ymlPath, ymlText, ENCODING.UTF8);
+
+    // await new Promise((resolve) => setTimeout(resolve, 300));
+  }
+}
+
+/**
+ * 使用示例：
+ * invokeMihomoValidate('/home/whilconn/workspaced9/clash-cat/dist/tmp/proxies-all-20250111104120.yml');
+ */
 
 export async function invokeSpeedTest(clashYmlPath) {
   const appPath = path.resolve(PATHS.pkgsAbs, LIB_LITE.appPath);
