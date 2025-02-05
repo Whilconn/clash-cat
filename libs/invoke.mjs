@@ -1,5 +1,6 @@
 import fsp from 'node:fs/promises';
 import path from 'node:path';
+import cp from 'node:child_process';
 import yaml from 'js-yaml';
 import ping from 'ping';
 import { logger } from '../src/utils/logger.mjs';
@@ -8,14 +9,15 @@ import { runBatch } from '../src/utils/task.mjs';
 import { ENCODING, PATHS } from '../src/utils/constant.mjs';
 import { LIB_LITE, LIB_MIHOMO, LIB_SUBCONVERTER } from './libs.mjs';
 
-const execOpts = { cwd: PATHS.tmpDistAbs };
+const execOpts = { cwd: PATHS.tmpDistAbs, stdio: 'pipe' };
 
 function validateByMihomo(clashYmlPath) {
+  logger.info('校验节点...');
   const appPath = path.resolve(PATHS.pkgsAbs, LIB_MIHOMO.appPath);
   const cmd = `${appPath} -t -f ${clashYmlPath}`;
 
   try {
-    exec(cmd, { ...execOpts, stdio: '' });
+    exec(cmd, { ...execOpts });
   } catch (err) {
     /**
      * err.stdout example:
@@ -67,23 +69,66 @@ export async function invokeMihomoValidate(ymlPath) {
  */
 
 export async function invokeSpeedTest(clashYmlPath) {
+  logger.info('节点测速...');
+
   const appPath = path.resolve(PATHS.pkgsAbs, LIB_LITE.appPath);
   const configPath = path.resolve(PATHS.libsAbs, 'lite-speed-test-config.json');
-  const cmd = `${appPath} --config ${configPath} --test ${clashYmlPath}`;
-  exec(cmd, execOpts);
+  const appArgs = ['--config', configPath, '--test', clashYmlPath];
 
-  const speedJsonPath = path.resolve(PATHS.tmpDistAbs, 'output.json');
-  const speedText = await fsp.readFile(speedJsonPath, ENCODING.UTF8);
-  const speedJson = speedText ? JSON.parse(speedText) : {};
-
-  const aliveProxyNameSet = speedJson.nodes.reduce((set, node) => {
-    return node.isok && set.add(node.remarks), set;
-  }, new Set());
+  logger.info(`测速命令：${[appPath, ...appArgs].join(' ')}`);
 
   const clashYmlText = await fsp.readFile(clashYmlPath, ENCODING.UTF8);
   const proxies = yaml.load(clashYmlText)?.proxies || [];
 
-  return proxies.filter((p) => aliveProxyNameSet.has(p.name));
+  return new Promise((resolve, reject) => {
+    const child = cp.spawn(appPath, appArgs);
+    const output = [];
+
+    const handleOutput = (content) => {
+      output.push(content);
+
+      if (!content.includes(`"info":"eof"`)) return;
+
+      resolve(output.join(''));
+
+      setTimeout(() => {
+        child.kill('SIGTERM');
+      }, 1000);
+    };
+
+    // 监听标准输出
+    child.stdout.on('data', (data) => {
+      handleOutput(data.toString());
+    });
+
+    // 监听标准错误
+    child.stderr.on('data', (data) => {
+      handleOutput(data.toString());
+    });
+
+    // 监听错误
+    child.on('error', (error) => {
+      reject(error);
+    });
+  }).then((log) => {
+    logger.info('节点测速完成，过滤节点...');
+
+    const lines = log.split('\n').filter(Boolean);
+
+    // 示例：2025/02/05 18:05:09 66 广东省广州市8vzqw recv: 3.7MB/s
+    const aliveProxyLines = lines.filter((l) => l.includes(`recv:`)) || [];
+    const aliveProxyNames = aliveProxyLines.map((l) => {
+      return l
+        .slice(20)
+        .replace(/^\d+\s+/, '')
+        .replace(/\s+recv\:.+$/, '');
+    });
+    const aliveProxyNameSet = new Set(aliveProxyNames);
+
+    logger.info(`可用节点 ${aliveProxyNameSet.size} 个：${[...aliveProxyNameSet].join()}`);
+
+    return proxies.filter((p) => aliveProxyNameSet.has(p.name));
+  });
 }
 
 // lite speed test 出错时的备用方案
@@ -127,11 +172,18 @@ async function dumpSubConvertConfig(subscriptionUrls) {
  * @returns {string}
  */
 export async function invokeSubconverterByCmd(subscriptionUrls) {
+  logger.info('节点转译...');
+
   const ymlPath = await dumpSubConvertConfig(subscriptionUrls);
 
   const appPath = path.resolve(PATHS.pkgsAbs, LIB_SUBCONVERTER.appPath);
   const cmd = `${appPath} -g`;
-  exec(cmd, execOpts);
+
+  try {
+    exec(cmd, execOpts);
+  } catch (error) {
+    logger.error(`节点转译出错：${error.stdout}`);
+  }
 
   return ymlPath;
 }

@@ -1,6 +1,6 @@
 {
   "group": "clash-cat",
-  "speedtestMode": "all",
+  "speedtestMode": "speedonly",
   "pingMethod": "googleping",
   "sortMethod": "rspeed",
   "concurrency": 1000,
