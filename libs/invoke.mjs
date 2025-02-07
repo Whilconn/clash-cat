@@ -81,7 +81,7 @@ export async function invokeSpeedTest(clashYmlPath) {
   const proxies = yaml.load(clashYmlText)?.proxies || [];
 
   return new Promise((resolve, reject) => {
-    const child = cp.spawn(appPath, appArgs);
+    const child = cp.spawn(appPath, appArgs, execOpts);
     const output = [];
 
     const handleOutput = (content) => {
@@ -182,7 +182,8 @@ export async function invokeSubconverterByCmd(subscriptionUrls) {
   try {
     exec(cmd, execOpts);
   } catch (error) {
-    logger.error(`节点转译出错：${error.stdout}`);
+    const msg = error?.stack || error?.message || error?.stdout;
+    logger.error(`节点转译出错：\n${msg}`);
   }
 
   return ymlPath;
