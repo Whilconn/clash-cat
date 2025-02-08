@@ -109,7 +109,7 @@ export async function invokeSpeedTest(clashYmlPath) {
       reject(error);
     });
   }).then((log) => {
-    logger.info('节点测速完成，过滤节点...');
+    logger.info('测速完成，过滤节点...');
 
     const lines = log.split('\n').filter(Boolean);
 
@@ -170,7 +170,7 @@ async function dumpSubConvertConfig(subscriptionUrls) {
  * @returns {string}
  */
 export async function invokeSubconverterByCmd(subscriptionUrls) {
-  logger.info('节点转译...');
+  logger.info('转译订阅文件...');
 
   const ymlPath = await dumpSubConvertConfig(subscriptionUrls);
 
@@ -181,7 +181,7 @@ export async function invokeSubconverterByCmd(subscriptionUrls) {
     exec(cmd, { ...execOpts, stdio: 'ignore' });
   } catch (error) {
     const msg = error?.stack || error?.message || error?.stdout;
-    logger.error(`节点转译出错：\n${msg}`);
+    logger.error(`转译订阅文件出错：\n${msg}`);
   }
 
   return ymlPath;

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run spider && npm run convert",
-    "convert": "node ./src/convert-pipeline/index.mjs",
+    "convert": "node ./src/convert/index.mjs",
     "spider": "node ./src/spider/index.mjs",
     "postinstall": "node ./libs/install.mjs"
   },

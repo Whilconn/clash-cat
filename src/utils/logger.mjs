@@ -24,3 +24,16 @@ export const logger = createLogger({
 if (process.env.NODE_ENV !== 'production') {
   logger.add(new transports.Console({ format: format.combine(format.colorize(), ...formats) }));
 }
+
+export function wrapTimeLogger(fn, actionName) {
+  return async (...args) => {
+    logger.info(`${actionName}...`);
+    const time = Date.now();
+
+    const res = await fn(...args);
+
+    logger.info(`${actionName}耗时：${((Date.now() - time) / 1000).toFixed(2)} s`);
+
+    return res;
+  };
+}
