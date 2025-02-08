@@ -17,7 +17,7 @@ function validateByMihomo(clashYmlPath) {
   const cmd = `${appPath} -t -f ${clashYmlPath}`;
 
   try {
-    exec(cmd, { ...execOpts });
+    exec(cmd, execOpts);
   } catch (err) {
     /**
      * err.stdout example:
@@ -58,8 +58,6 @@ export async function invokeMihomoValidate(ymlPath) {
 
     const ymlText = yaml.dump(ymlBean);
     await fsp.writeFile(ymlPath, ymlText, ENCODING.UTF8);
-
-    // await new Promise((resolve) => setTimeout(resolve, 300));
   }
 }
 
@@ -180,7 +178,7 @@ export async function invokeSubconverterByCmd(subscriptionUrls) {
   const cmd = `${appPath} -g`;
 
   try {
-    exec(cmd, execOpts);
+    exec(cmd, { ...execOpts, stdio: 'ignore' });
   } catch (error) {
     const msg = error?.stack || error?.message || error?.stdout;
     logger.error(`节点转译出错：\n${msg}`);
