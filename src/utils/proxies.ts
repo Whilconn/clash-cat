@@ -1,6 +1,6 @@
 import fsp from 'node:fs/promises';
 import yaml from 'js-yaml';
-import { ENCODING } from './constant.mjs';
+import { ENCODING } from './constant';
 
 function isProxyValid(proxy) {
   //check server

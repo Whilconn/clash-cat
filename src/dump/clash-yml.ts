@@ -1,7 +1,7 @@
 import fsp from 'node:fs/promises';
 import path from 'node:path';
 import yaml from 'js-yaml';
-import { ENCODING, PATHS } from '../utils/constant.mjs';
+import { ENCODING, PATHS } from '../utils/constant';
 
 const distDir = PATHS.distAbs;
 const templateDir = path.resolve(PATHS.srcAbs, 'template');

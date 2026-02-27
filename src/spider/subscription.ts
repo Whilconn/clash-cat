@@ -1,7 +1,7 @@
 import yaml from 'js-yaml';
 import { Base64 } from 'js-base64';
-import { runBatch } from '../utils/task.mjs';
-import { httpRequest } from '../utils/http.mjs';
+import { runBatch } from '../utils/task';
+import { httpRequest } from '../utils/http';
 
 function extractYmlProxies(text) {
   const ymlBean = yaml.load(text);

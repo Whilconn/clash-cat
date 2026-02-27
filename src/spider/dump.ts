@@ -3,8 +3,8 @@ import fsp from 'node:fs/promises';
 import crypto from 'node:crypto';
 import yaml from 'js-yaml';
 import { Base64 } from 'js-base64';
-import { runBatch } from '../utils/task.mjs';
-import { ENCODING, PATHS, SUB_PREFIX } from '../utils/constant.mjs';
+import { runBatch } from '../utils/task';
+import { ENCODING, PATHS, SUB_PREFIX } from '../utils/constant';
 
 function genFileName(prefixName, fileContent, extName) {
   if (!extName) extName = 'txt';

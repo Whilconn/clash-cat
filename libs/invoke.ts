@@ -3,11 +3,11 @@ import path from 'node:path';
 import cp from 'node:child_process';
 import yaml from 'js-yaml';
 import ping from 'ping';
-import { logger } from '../src/utils/logger.mjs';
-import { exec } from '../src/utils/exec.mjs';
-import { runBatch } from '../src/utils/task.mjs';
-import { ENCODING, PATHS } from '../src/utils/constant.mjs';
-import { LIB_LITE, LIB_MIHOMO, LIB_SUBCONVERTER } from './libs.mjs';
+import { logger } from '../src/utils/logger';
+import { exec } from '../src/utils/exec';
+import { runBatch } from '../src/utils/task';
+import { ENCODING, PATHS } from '../src/utils/constant';
+import { LIB_LITE, LIB_MIHOMO, LIB_SUBCONVERTER } from './libs';
 
 const execOpts = { cwd: PATHS.tmpDistAbs, stdio: 'pipe' };
 

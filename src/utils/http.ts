@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useGitHubMirror } from './gh-mirrors.mjs';
+import { useGitHubMirror } from './gh-mirrors';
 
 const httpClient = axios.create({ timeout: 6000 });
 

@@ -1,6 +1,6 @@
 import cp from 'node:child_process';
-import { ENCODING } from './constant.mjs';
-import { logger } from './logger.mjs';
+import { ENCODING } from './constant';
+import { logger } from './logger';
 
 export function exec(cmd, options = {}) {
   logger.info(`执行命令：${cmd}`);

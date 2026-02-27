@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { createLogger, format, transports } from 'winston';
-import { PATHS } from './constant.mjs';
+import { PATHS } from './constant';
 
 const formats = [
   format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),

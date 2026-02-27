@@ -1,9 +1,9 @@
 import fsp from 'node:fs/promises';
-import { resolveAggregations } from './aggregation.mjs';
-import { resolveSubscriptions } from './subscription.mjs';
-import { dumpResolvedSubs } from './dump.mjs';
-import { PATHS } from '../utils/constant.mjs';
-import { wrapTimeLogger } from '../utils/logger.mjs';
+import { resolveAggregations } from './aggregation';
+import { resolveSubscriptions } from './subscription';
+import { dumpResolvedSubs } from './dump';
+import { PATHS } from '../utils/constant';
+import { wrapTimeLogger } from '../utils/logger';
 
 import subSource from '../../local/subscription-source.json' with { type: 'json' };
 

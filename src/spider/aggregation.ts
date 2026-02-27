@@ -1,5 +1,5 @@
-import { runBatch } from '../utils/task.mjs';
-import { httpRequest } from '../utils/http.mjs';
+import { runBatch } from '../utils/task';
+import { httpRequest } from '../utils/http';
 
 async function extractSubLinks(aggregationUrl) {
   try {

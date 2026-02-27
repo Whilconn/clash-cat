@@ -1,5 +1,5 @@
-import { invokeMihomoValidate, invokeSpeedTest, invokeSubconverterByCmd } from '../../libs/invoke.mjs';
-import { normalizeProxiesFile } from '../utils/proxies.mjs';
+import { invokeMihomoValidate, invokeSpeedTest, invokeSubconverterByCmd } from '../../libs/invoke';
+import { normalizeProxiesFile } from '../utils/proxies';
 
 export async function transformSubFilesByLib(filePaths) {
   const ymlPath = await invokeSubconverterByCmd(filePaths);

@@ -24,7 +24,7 @@ const V_MIHO = 'v1.19.20';
 export const LIB_MIHOMO = {
   zipName: 'mihomo.gz',
   appPath: './mihomo',
-  downloadUrl: `https://${host}/MetaCubeX/mihomo/releases/download/${V_MIHO}/mihomo-${platform}-amd64-v${V_MIHO}.gz`,
+  downloadUrl: `https://${host}/MetaCubeX/mihomo/releases/download/${V_MIHO}/mihomo-${platform}-amd64-${V_MIHO}.gz`,
   unzipCmd: 'gzip -d',
 };
 

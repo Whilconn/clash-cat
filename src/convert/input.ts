@@ -1,7 +1,7 @@
 import path from 'node:path';
 import fsp from 'node:fs/promises';
 
-import { PATHS } from '../utils/constant.mjs';
+import { PATHS } from '../utils/constant';
 
 async function loadLocalFiles(dir) {
   const filePaths = await fsp.readdir(dir);

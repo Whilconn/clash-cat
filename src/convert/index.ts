@@ -1,9 +1,9 @@
 import fsp from 'node:fs/promises';
-import { loadSubFiles } from './input.mjs';
-import { logger, wrapTimeLogger } from '../utils/logger.mjs';
-import { PATHS } from '../utils/constant.mjs';
-import { dumpClashYml } from '../dump/clash-yml.mjs';
-import { transformSubFilesByLib } from './transform.mjs';
+import { loadSubFiles } from './input';
+import { logger, wrapTimeLogger } from '../utils/logger';
+import { PATHS } from '../utils/constant';
+import { dumpClashYml } from '../dump/clash-yml';
+import { transformSubFilesByLib } from './transform';
 
 async function ensureDistDir() {
   // await fsp.rm(PATHS.distAbs, { force: true, recursive: true });

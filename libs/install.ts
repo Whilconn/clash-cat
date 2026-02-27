@@ -1,8 +1,8 @@
 import path from 'node:path';
 import fsp from 'node:fs/promises';
-import { LIBS } from './libs.mjs';
-import { exec } from '../src/utils/exec.mjs';
-import { PATHS } from '../src/utils/constant.mjs';
+import { LIBS } from './libs';
+import { exec } from '../src/utils/exec';
+import { PATHS } from '../src/utils/constant';
 
 const pkgsDir = path.resolve(PATHS.libsAbs, 'pkgs');
 
