@@ -2,7 +2,7 @@ import fsp from 'node:fs/promises';
 import yaml from 'js-yaml';
 import { ENCODING } from './constant';
 
-function isProxyValid(proxy) {
+function isProxyValid(proxy: ProxyNode): boolean {
   //check server
   const notValid1 = !/^.+[.].+[.].+$/.test(proxy.server);
   const notValid2 = /[@?&=:>]/.test(proxy.server);
@@ -13,7 +13,7 @@ function isProxyValid(proxy) {
   return /^\d+$/.test(proxy.port) && /^[\u0020-\u007e]+$/.test(proxy.password);
 }
 
-function formatName(name) {
+function formatName(name: string) {
   if (!name || typeof name !== 'string') return '';
 
   const K = 6;
@@ -25,7 +25,7 @@ function formatName(name) {
 }
 
 // filter and format proxies
-function normalizeProxies(proxies) {
+function normalizeProxies(proxies: ProxyNode[]) {
   const hostSet = new Set();
   const validProxies = [];
 
@@ -45,7 +45,7 @@ function normalizeProxies(proxies) {
 }
 
 // 剔除 yaml 中的异常内容
-function normalizeYmlText(ymlText) {
+function normalizeYmlText(ymlText: string) {
   const invalidPatterns = ['!<str> '];
 
   for (const p of invalidPatterns) {
@@ -55,7 +55,7 @@ function normalizeYmlText(ymlText) {
   return ymlText;
 }
 
-export async function normalizeProxiesFile(ymlPath) {
+export async function normalizeProxiesFile(ymlPath: string) {
   let clashYmlText = await fsp.readFile(ymlPath, ENCODING.UTF8);
   clashYmlText = normalizeYmlText(clashYmlText);
 

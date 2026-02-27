@@ -25,8 +25,8 @@ if (process.env.NODE_ENV !== 'production') {
   logger.add(new transports.Console({ format: format.combine(format.colorize(), ...formats) }));
 }
 
-export function wrapTimeLogger(fn, actionName) {
-  return async (...args) => {
+export function wrapTimeLogger(fn: Function, actionName: string) {
+  return async (...args: unknown[]) => {
     logger.info(`${actionName}...`);
     const time = Date.now();
 

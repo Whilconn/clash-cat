@@ -1,7 +1,7 @@
 const GH_HOST = 'raw.githubusercontent.com';
 const JSDELIVR_HOST = 'cdn.jsdelivr.net';
 
-export function convertGithubRawToJsdelivr(rawUrl) {
+export function convertGithubRawToJsdelivr(rawUrl: string) {
   // 去掉协议头（https://, http://, :// 或空串）
   const url = rawUrl.replace(/^(https?:)?\/\//, '');
 
@@ -28,7 +28,7 @@ console.log('CDN URL:', cdnUrl);
 https://cdn.jsdelivr.net/gh/vxiaov/free_proxies@main/clash/clash.provider.yaml
  */
 
-export function useGitHubMirror(originalUrl, mirrorIndex = 0) {
+export function useGitHubMirror(originalUrl: string, mirrorIndex = 0) {
   const ghMirrors = ['bgithub.xyz', 'hgithub.xyz'];
   const ghRawMirrors = ghMirrors.map((m) => `raw.${m}`);
 

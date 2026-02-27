@@ -1,4 +1,4 @@
-export async function runBatch(asyncTasks, batchSize) {
+export async function runBatch(asyncTasks: Promise<unknown>[], batchSize: number) {
   const results = [];
 
   // 分批次

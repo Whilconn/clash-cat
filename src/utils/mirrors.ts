@@ -33,7 +33,7 @@ async function checkMirrors() {
   return mirrorMapCache;
 }
 
-export async function transformUrlByMirror(url) {
+export async function transformUrlByMirror(url: string) {
   const mirrorMap = await checkMirrors();
 
   const urlBean = new URL(url);

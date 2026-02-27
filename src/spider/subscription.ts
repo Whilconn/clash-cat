@@ -3,12 +3,12 @@ import { Base64 } from 'js-base64';
 import { runBatch } from '../utils/task';
 import { httpRequest } from '../utils/http';
 
-function extractYmlProxies(text) {
+function extractYmlProxies(text: string) {
   const ymlBean = yaml.load(text);
   return ymlBean?.proxies || [];
 }
 
-function extractPlainProxyLines(text) {
+function extractPlainProxyLines(text: string) {
   // 避免 html干扰
   text = text.replace(/[<>]/g, '\n');
   const lines = text.split('\n').map((s) => s.trim());
@@ -17,14 +17,14 @@ function extractPlainProxyLines(text) {
   return lines.filter((l) => l && reg.test(l));
 }
 
-function extractBase64Lines(text) {
+function extractBase64Lines(text: string) {
   const lines = text.split('\n').filter(Boolean);
   const plainText = Base64.decode(lines.at(0)).trim();
   const reg = /^(ss|ssr|vmess|vless|trojan):\/\/.+/;
   return reg.test(plainText) ? lines : null;
 }
 
-async function resolveSubscription(url) {
+async function resolveSubscription(url: string) {
   let res;
 
   try {
@@ -52,7 +52,7 @@ async function resolveSubscription(url) {
   if (isPlain) return { url, isPlain, plainLines };
 }
 
-export async function resolveSubscriptions(subLinks) {
+export async function resolveSubscriptions(subLinks: string[]) {
   const tasks = subLinks.map((l) => resolveSubscription(l));
   const results = await runBatch(tasks, 10);
 

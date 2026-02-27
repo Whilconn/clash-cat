@@ -1,7 +1,7 @@
 import { runBatch } from '../utils/task';
 import { httpRequest } from '../utils/http';
 
-async function extractSubLinks(aggregationUrl) {
+async function extractSubLinks(aggregationUrl: string) {
   try {
     const res = await httpRequest(aggregationUrl);
     return res.match(/https?:\/\/[\S]+/g) || [];
@@ -10,7 +10,7 @@ async function extractSubLinks(aggregationUrl) {
   return [];
 }
 
-export async function resolveAggregations(aggregationSubLinks) {
+export async function resolveAggregations(aggregationSubLinks: string[]) {
   const tasks = aggregationSubLinks.map((l) => extractSubLinks(l));
   const results = await runBatch(tasks, 10);
 

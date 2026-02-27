@@ -169,7 +169,7 @@ async function dumpSubConvertConfig(subscriptionUrls: string[]) {
  * @param {Array<string>} subscriptionUrls
  * @returns {string}
  */
-export async function invokeSubconverterByCmd(subscriptionUrls: string[]) {
+export async function invokeSubconverterByCmd(subscriptionUrls: string[]): Promise<string> {
   logger.info('转译订阅文件...');
 
   const ymlPath = await dumpSubConvertConfig(subscriptionUrls);

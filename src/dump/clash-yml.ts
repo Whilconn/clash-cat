@@ -6,7 +6,7 @@ import { ENCODING, PATHS } from '../utils/constant';
 const distDir = PATHS.distAbs;
 const templateDir = path.resolve(PATHS.srcAbs, 'template');
 
-export async function dumpProxiesYml(proxies, distPath) {
+export async function dumpProxiesYml(proxies: ProxyNode[], distPath?: string) {
   const ymlText = yaml.dump({ proxies });
   if (!distPath) distPath = path.resolve(distDir, 'proxies-alive.yml');
   return fsp.writeFile(distPath, ymlText, ENCODING.UTF8);
@@ -23,7 +23,7 @@ async function copyFiles() {
   return Promise.all(tasks);
 }
 
-export async function dumpClashYml(proxies) {
+export async function dumpClashYml(proxies: ProxyNode[]) {
   await dumpProxiesYml(proxies);
   await copyFiles();
 }

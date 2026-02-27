@@ -1,7 +1,7 @@
 import { invokeMihomoValidate, invokeSpeedTest, invokeSubconverterByCmd } from '../../libs/invoke';
 import { normalizeProxiesFile } from '../utils/proxies';
 
-export async function transformSubFilesByLib(filePaths) {
+export async function transformSubFilesByLib(filePaths: string[]) {
   const ymlPath = await invokeSubconverterByCmd(filePaths);
 
   // 对代理节点做标准化处理，去重、过滤、改名等

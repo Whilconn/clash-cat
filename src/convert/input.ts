@@ -3,7 +3,7 @@ import fsp from 'node:fs/promises';
 
 import { PATHS } from '../utils/constant';
 
-async function loadLocalFiles(dir) {
+async function loadLocalFiles(dir: string) {
   const filePaths = await fsp.readdir(dir);
   return filePaths.map((f) => path.resolve(dir, f));
 }
