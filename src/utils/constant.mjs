@@ -13,13 +13,6 @@ export const PATHS = {
   logAbs: path.resolve(root, 'log'),
 };
 
-export const PROTOCOL = {
-  ss: 'ss',
-  ssr: 'ssr',
-  vmess: 'vmess',
-  trojan: 'trojan',
-};
-
 export const ENCODING = {
   UTF8: 'utf-8',
   BASE64: 'base64',
