@@ -13,14 +13,14 @@ function extractPlainProxyLines(text: string) {
   text = text.replace(/[<>]/g, '\n');
   const lines = text.split('\n').map((s) => s.trim());
 
-  const reg = /^(ss|ssr|vmess|vless|trojan):\/\/.+$/;
+  const reg = /^(ss|ssr|vmess|vless|trojan|Hysteria):\/\/.+$/i;
   return lines.filter((l) => l && reg.test(l));
 }
 
 function extractBase64Lines(text: string) {
   const lines = text.split('\n').filter(Boolean);
   const plainText = Base64.decode(lines.at(0)).trim();
-  const reg = /^(ss|ssr|vmess|vless|trojan):\/\/.+/;
+  const reg = /^(ss|ssr|vmess|vless|trojan|Hysteria):\/\/.+/i;
   return reg.test(plainText) ? lines : null;
 }
 
