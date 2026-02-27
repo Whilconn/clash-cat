@@ -29,3 +29,11 @@ export const LIB_MIHOMO = {
 };
 
 export const LIBS = [LIB_LITE, LIB_SUBCONVERTER, LIB_MIHOMO];
+
+export type Lib = {
+  zipName: string;
+  appPath: string;
+  downloadUrl: string;
+  unzipCmd: string;
+  generateIniPath?: string;
+};

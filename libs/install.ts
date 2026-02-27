@@ -1,12 +1,12 @@
 import path from 'node:path';
 import fsp from 'node:fs/promises';
-import { LIBS } from './libs';
+import { Lib, LIBS } from './libs';
 import { exec } from '../src/utils/exec';
 import { PATHS } from '../src/utils/constant';
 
 const pkgsDir = path.resolve(PATHS.libsAbs, 'pkgs');
 
-function download(lib) {
+function download(lib: Lib) {
   const { appPath, downloadUrl, zipName, unzipCmd } = lib;
   const execOpts = { cwd: pkgsDir };
 

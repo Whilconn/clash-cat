@@ -1,6 +1,6 @@
 import fsp from 'node:fs/promises';
 import path from 'node:path';
-import cp from 'node:child_process';
+import cp, { SpawnOptionsWithoutStdio } from 'node:child_process';
 import yaml from 'js-yaml';
 import ping from 'ping';
 import { logger } from '../src/utils/logger';
@@ -9,9 +9,9 @@ import { runBatch } from '../src/utils/task';
 import { ENCODING, PATHS } from '../src/utils/constant';
 import { LIB_LITE, LIB_MIHOMO, LIB_SUBCONVERTER } from './libs';
 
-const execOpts = { cwd: PATHS.tmpDistAbs, stdio: 'pipe' };
+const execOpts: SpawnOptionsWithoutStdio = { cwd: PATHS.tmpDistAbs, stdio: 'pipe' };
 
-function validateByMihomo(clashYmlPath) {
+function validateByMihomo(clashYmlPath: string) {
   logger.info('校验节点...');
   const appPath = path.resolve(PATHS.pkgsAbs, LIB_MIHOMO.appPath);
   const cmd = `${appPath} -t -f ${clashYmlPath}`;
@@ -39,7 +39,7 @@ function validateByMihomo(clashYmlPath) {
   }
 }
 
-export async function invokeMihomoValidate(ymlPath) {
+export async function invokeMihomoValidate(ymlPath: string) {
   if (!ymlPath) return;
 
   while (true) {
@@ -66,7 +66,7 @@ export async function invokeMihomoValidate(ymlPath) {
  * invokeMihomoValidate('/home/whilconn/workspaced9/clash-cat/dist/tmp/proxies-all-20250111104120.yml');
  */
 
-export async function invokeSpeedTest(clashYmlPath) {
+export async function invokeSpeedTest(clashYmlPath: string) {
   logger.info('节点测速...');
 
   const appPath = path.resolve(PATHS.pkgsAbs, LIB_LITE.appPath);
@@ -108,7 +108,7 @@ export async function invokeSpeedTest(clashYmlPath) {
     child.on('error', (error) => {
       reject(error);
     });
-  }).then((log) => {
+  }).then((log: string) => {
     logger.info('测速完成，过滤节点...');
 
     const lines = log.split('\n').filter(Boolean);
@@ -130,7 +130,7 @@ export async function invokeSpeedTest(clashYmlPath) {
 }
 
 // lite speed test 出错时的备用方案
-export async function pingTest(clashYmlPath) {
+export async function pingTest(clashYmlPath: string) {
   const clashYmlText = await fsp.readFile(clashYmlPath, ENCODING.UTF8);
   const proxies = yaml.load(clashYmlText)?.proxies || [];
 
@@ -148,7 +148,7 @@ export async function pingTest(clashYmlPath) {
   return filePath;
 }
 
-async function dumpSubConvertConfig(subscriptionUrls) {
+async function dumpSubConvertConfig(subscriptionUrls: string[]) {
   const date = new Date()
     .toLocaleString('zh-CN')
     .split(/\D/)
@@ -169,7 +169,7 @@ async function dumpSubConvertConfig(subscriptionUrls) {
  * @param {Array<string>} subscriptionUrls
  * @returns {string}
  */
-export async function invokeSubconverterByCmd(subscriptionUrls) {
+export async function invokeSubconverterByCmd(subscriptionUrls: string[]) {
   logger.info('转译订阅文件...');
 
   const ymlPath = await dumpSubConvertConfig(subscriptionUrls);
@@ -185,25 +185,4 @@ export async function invokeSubconverterByCmd(subscriptionUrls) {
   }
 
   return ymlPath;
-}
-
-// 在线服务不稳定，不推荐使用
-export function invokeSubconverterByHttp(subscriptionUrls, serviceHost = 'https://sub.xeton.dev/sub') {
-  const params = new URLSearchParams({
-    url: subscriptionUrls.join('|'),
-    target: 'clash',
-    list: true,
-    new_name: true,
-    tfo: false,
-    scv: false,
-    fdn: false,
-    sort: false,
-    emoji: false,
-    insert: false,
-  });
-
-  const url = `${serviceHost}?${params.toString()}`;
-  return httpRequest(url).catch((err) => {
-    logger.error(`解析失败：${err.message}\n  ${subscriptionUrls.toString()}\n  ${url}`);
-  });
 }

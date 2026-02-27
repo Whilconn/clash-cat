@@ -13,7 +13,7 @@ export const PATHS = {
   logAbs: path.resolve(root, 'log'),
 };
 
-export const ENCODING = {
+export const ENCODING: Record<string, BufferEncoding> = {
   UTF8: 'utf-8',
   BASE64: 'base64',
 };
