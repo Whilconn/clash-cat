@@ -21,7 +21,7 @@ export const LIB_SUBCONVERTER = {
 export const LIB_MIHOMO = {
   zipName: 'mihomo.gz',
   appPath: './mihomo',
-  downloadUrl: `https://${host}/MetaCubeX/mihomo/releases/download/v1.19.19/mihomo-${platform}-amd64-v1.19.19.gz`,
+  downloadUrl: `https://${host}/MetaCubeX/mihomo/releases/download/v1.19.20/mihomo-${platform}-amd64-v1.19.19.gz`,
   unzipCmd: 'gzip -d',
 };
 
